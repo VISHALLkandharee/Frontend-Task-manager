@@ -171,9 +171,56 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfilePicture = async (file) => {
+    if (!token) return;
+    if (!file) return;
+
+    const formData = new FormData();
+
+    formData.append("avatar", file);
+
+    try {
+      const response = await fetch(
+        `${BASE_URL}/api/auth/update-profile-picture`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message || "Profile picture update failed");
+        throw new Error(
+          "Profile picture update failed: " + (data.message || "Unknown error")
+        );
+      }
+
+      const user = data?.updatedUser;
+      setUser(user);
+      localStorage.setItem("user", JSON.stringify(data.updatedUser));
+      toast.success(data.message || "Profile updated successfully");
+      console.log(data.message)
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, token, signup, login, updateProfile, handleLogout }}
+      value={{
+        user,
+        token,
+        signup,
+        login,
+        updateProfile,
+        handleLogout,
+        updateProfilePicture,
+      }}
     >
       {children}
     </AuthContext.Provider>

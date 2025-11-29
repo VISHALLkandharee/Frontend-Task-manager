@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
-  const { user, updateProfile } = useContext(AuthContext);
+  const { user, updateProfile, updateProfilePicture } = useContext(AuthContext);
 
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState(user?.username || "");
@@ -42,14 +42,35 @@ const Profile = () => {
       >
         <div
           id="user-image"
-          className="size-35 rounded-full overflow-hidden border-4 border-white"
+          className="group relative size-35 rounded-full overflow-hidden border-4 border-white"
         >
-          <img
-            src={user?.avatar || "#"}
-            alt="user-image"
-            className="w-full h-full object-cover"
+          <input
+            type="file"
+            name="avatar"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                updateProfilePicture(file);
+                e.target.value = null;
+              }
+            }}
+            accept="image/*"
+            className="absolute inset-0 hidden group-hover:flex cursor-pointer 
+             opacity-0 group-hover:opacity-100 group-hover:scale-100
+             transition-all duration-200 
+             bg-linear-to-t from-black/80 to-transparent
+             items-center justify-center text-white text-sm font-medium 
+             hover:bg-black/70 z-10"
           />
+
+          <img
+            src={user?.avatar || "loading"}
+            alt="user-image"
+            className="w-full h-full object-cover group-hover:brightness-50 transition-all duration-200"
+          />
+          {/* Optional: Add camera icon via Heroicons or SVG inside input for better UX */}
         </div>
+
         <div
           id="edit-profile"
           onClick={isEditing ? undefined : startEditing}
@@ -65,7 +86,7 @@ const Profile = () => {
             </button>
           ) : (
             <>
-              Edit <i className="fa-solid fa-pen-to-square"></i>{" "}
+              Edit <i className="fa-solid fa-pen-to-square"></i>
             </>
           )}
         </div>
