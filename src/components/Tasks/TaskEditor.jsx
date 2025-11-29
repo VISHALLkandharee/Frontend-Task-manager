@@ -14,7 +14,6 @@ const TaskEditor = () => {
     const dueDate = formData.get("dueDate");
     await createTask(title, description, dueDate);
     navigate("/dashboard");
-    alert("Task Created Successfully!");
     e.target.reset(); // Reset the form after submission
   };
 
