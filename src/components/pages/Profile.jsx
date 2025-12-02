@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
+  const [isEditingPicture, setIsEditingPicture] = useState(false);
   const { user, updateProfile, updateProfilePicture } = useContext(AuthContext);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -31,11 +32,34 @@ const Profile = () => {
     }
   };
 
+  const editProfilePicture = async (e) => {
+    e.preventDefault();
+    setIsEditingPicture(true);
+    try {
+      const file = e.target.files[0];
+      if (file) {
+        updateProfilePicture(file);
+        e.target.value = null;
+      }
+    } catch (error) {
+      console.log("Failed updating picture", error);
+    } finally {
+      setIsEditingPicture(false);
+    }
+  };
+
   return (
     <div className="h-screen w-screen sm:h-auto sm:max-w-lg sm:mx-auto sm:my-8 bg-blue-400/90 p-4 sm:p-6 rounded-xl shadow-lg text-white flex flex-col">
       <h1 className="font-bold capitalize text-xl tracking-wide text-center">
         Profile
       </h1>
+      {isEditingPicture ? (
+        <div className="text-sm text-gray-500 capitalize p-2">
+          updating profile picture
+        </div>
+      ) : (
+        ""
+      )}
       <div
         id="user-profile"
         className="p-2 rounded flex flex-col sm:flex-row justify-between items-center mt-3 gap-4"
@@ -44,23 +68,22 @@ const Profile = () => {
           id="user-image"
           className="group relative size-35 rounded-full overflow-hidden border-4 border-white"
         >
+          <label
+            htmlFor="profile-pic"
+            className="absolute inset-0 flex items-center justify-center cursor-pointer 
+                bg-linear-to-t from-black/80 to-transparent hover:from-black/90 
+                opacity-65 group-hover:opacity-100 transition-all duration-200 z-10"
+          >
+            <i className="fa-solid fa-camera text-white text-sm"></i>
+          </label>
+
           <input
+            id="profile-pic"
             type="file"
             name="avatar"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                updateProfilePicture(file);
-                e.target.value = null;
-              }
-            }}
+            onChange={editProfilePicture}
             accept="image/*"
-            className="absolute inset-0 hidden group-hover:flex cursor-pointer 
-             opacity-0 group-hover:opacity-100 group-hover:scale-100
-             transition-all duration-200 
-             bg-linear-to-t from-black/80 to-transparent
-             items-center justify-center text-white text-sm font-medium 
-             hover:bg-black/70 z-10"
+            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20"
           />
 
           <img
@@ -68,7 +91,6 @@ const Profile = () => {
             alt="user-image"
             className="w-full h-full object-cover group-hover:brightness-50 transition-all duration-200"
           />
-          {/* Optional: Add camera icon via Heroicons or SVG inside input for better UX */}
         </div>
 
         <div
