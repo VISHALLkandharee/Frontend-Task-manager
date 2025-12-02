@@ -36,6 +36,7 @@ const SignUp = () => {
     } else {
       setUsername("");
       setPassword("");
+      setLoading(false);
       throw new Error("Signup failed");
     }
   };
@@ -98,7 +99,7 @@ const SignUp = () => {
         </form>
 
         <div id="not-registered" className="flex gap-4 font-light mt-4 justify-center">
-          Already have an account?{" "}
+          Already have an account?
           <NavLink
             to={"/login"}
             className="text-yellow-300 hover:text-yellow-400 text-sm underline"

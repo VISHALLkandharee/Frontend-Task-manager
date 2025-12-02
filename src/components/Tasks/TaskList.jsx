@@ -6,7 +6,7 @@ const TaskList = () => {
   const { tasks } = useContext(TasksContext);
 
   if (!tasks || tasks.length === 0) {
-    return <div className="p-4 text-xl font-light capitalize text-gray-400">Add tasks to manage...</div>;
+    return <div className="p-4 text-xl font-light capitalize text-gray-400">Tasks...</div>;
   }
 
 
